@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificados</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="cabecalho">
+        <nav class="cabecalho__menu">
+            <a class="cabecalho__menu__link" href="index.html">Início</a>
+            <a class="cabecalho__menu__link" href="about.html">Especializações</a>
+            <a class="cabecalho__menu__link" href="unity.html">Unity</a>
+            <a class="cabecalho__menu__link" href="certificadosingles.html">ENGLISH VERSION</a>
+        </nav>
+    </header>
+    <main class="apresentacao">
+        <section class="apresentacao__conteudo">
+            <h1 class="apresentacao__conteudo__titulo">Certificados</h1>
+            <p class="apresentacao__conteudo__texto">
+                <strong>-</strong> Certificados em cursos onlines nas áreas de 
+                <strong> Python, Java, HTML, CSS, SQLite Online, 
+                Gerenciamento de TI e Transformação Digital</strong>.</p>
+
+            <div class="apresentacao__links">
+                <h2 class="apresentacao__links__subtitulo">Acesse o repositório dos meus certificados:</h2>
+                <a class="apresentacao__links__link" href="https://github.com/GuadalupePradoSR/Certificados" target="_blank">
+                    <img src="github.png">
+                    Github
+                </a>
+            </div>
+        </section>
+        <img class="apresentacao__imagem" src="7238700.png" alt="Certificado HTML e CSS">
+        
+    </main>
+    <footer class="rodape">
+        <p>Desenvolvido por Guadalupe Prado.</p>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const elementsToAnimate = document.querySelectorAll(".apresentacao__conteudo__titulo, .apresentacao__conteudo__texto, .apresentacao__imagem");
+
+            function checkVisibility() {
+                const triggerBottom = window.innerHeight * 0.85;
+
+                elementsToAnimate.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+
+                    if (elementTop < triggerBottom) {
+                        element.classList.add("animate");
+                    }
+                });
+            }
+
+            window.addEventListener("scroll", checkVisibility);
+            checkVisibility(); // Initial check on load
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Especializações</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="cabecalho">
+        <nav class="cabecalho__menu">
+            <a class="cabecalho__menu__link" href="index.html">Início</a>
+            <a class="cabecalho__menu__link" href="about.html">Especializações</a>
+            <a class="cabecalho__menu__link" href="unity.html">Unity</a>
+            <a class="cabecalho__menu__link" href="aboutingles.html">ENGLISH VERSION</a>
+        </nav>
+    </header>
+    <main class="apresentacao">
+        <section class="apresentacao__conteudo">
+            <h1 class="apresentacao__conteudo__titulo">Especializações</h1>
+            <p class="apresentacao__conteudo__texto">
+                <strong>-</strong> Ensino Médio completo e cursando o Ensino Superior em 
+                <strong>Ciência da Computação (5º semestre)</strong> na <strong>UNIFOR</strong>.
+            </p>
+            <p class="apresentacao__conteudo__texto">
+                <strong>-</strong> Estudante do grupo de pesquisa científica <strong>Gira Lab 
+                (Laboratório de Pesquisa e Desenvolvimento em Games, Interação e Realidade Virtual)</strong>.
+            </p>
+            <p class="apresentacao__conteudo__texto">
+                <strong>-</strong> Projetos em <strong>C#</strong> desenvolvidos na plataforma <strong>Unity</strong>, 
+                no qual foi trabalhado <strong>criação de jogos, manipulação de movimentos, manipulação de Blend Shapes e criação de Blend Trees</strong>.</p>
+            <p class="apresentacao__conteudo__texto">
+                <strong>-</strong> Certificados em cursos onlines nas áreas de 
+                <strong> Python, Java, HTML, CSS, SQLite Online, 
+                Gerenciamento de TI e Transformação Digital</strong>.</p>
+            <p class="apresentacao__conteudo__texto">
+                <strong>-</strong> Curso de Inglês completo na escola de línguas Influx.</p>
+
+                <div class="apresentacao__links">
+                    <h2 class="apresentacao__links__subtitulo">Acesse meus certificados:</h2>
+                    <a class="apresentacao__links__link" href="certificados.html">
+                        Certificados
+                    </a>
+                    
+                </div>
+        </section>
+        <img class="apresentacao__imagem" src="giralab2 (1).jpg" alt="equipe Gira Lab">
+        
+    </main>
+    <footer class="rodape">
+        <p>Desenvolvido por Guadalupe Prado.</p>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const elementsToAnimate = document.querySelectorAll(".apresentacao__conteudo__titulo, .apresentacao__conteudo__texto, .apresentacao__imagem");
+
+            function checkVisibility() {
+                const triggerBottom = window.innerHeight * 0.85;
+
+                elementsToAnimate.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+
+                    if (elementTop < triggerBottom) {
+                        element.classList.add("animate");
+                    }
+                });
+            }
+
+            window.addEventListener("scroll", checkVisibility);
+            checkVisibility(); // Initial check on load
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre mim</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="cabecalho">
+        <nav class="cabecalho__menu">
+            <a class="cabecalho__menu__link" href="index.html">Início</a>
+            <a class="cabecalho__menu__link" href="about.html">Especializações</a>
+            <a class="cabecalho__menu__link" href="unity.html">Unity</a>
+            <a class="cabecalho__menu__link" href="indexingles.html">ENGLISH VERSION</a>
+        </nav>
+    </header>
+    <main class="apresentacao">
+        <section class="apresentacao__conteudo">
+            <h1 class="apresentacao__conteudo__titulo">Uma breve introdução 
+            <strong class="titulo-destaque">sobre mim!</strong></h1>
+            <p class="apresentacao__conteudo__texto">Olá, me chamo Guadalupe Prado, sou estudante do curso
+            <strong>Ciência da Computação</strong> na Universidade de Fortaleza <strong>(UNIFOR)</strong>. 
+            Estou no 5º semestre e faço parte do grupo de pesquisa científica <strong>Gira Lab 
+            (Laboratório de Pesquisa e Desenvolvimento em Games, Interação e Realidade Virtual)</strong>.
+            Sempre busco estudar aparte da universidade, me especializando em cursos onlines e 
+            desenvolvendo projetos do que foi aprendido. Tenho conhecimento nas linguagens <strong>Python,
+            Java, JavaScript, HTML, CSS, C#, MySQL e SQLite Online</strong>.</p>
+            <div class="apresentacao__links">
+                <h2 class="apresentacao__links__subtitulo">Acesse minhas redes:</h2>
+                <a class="apresentacao__links__link" href="https://github.com/GuadalupePradoSR" target="_blank">
+                    <img src="github.png">
+                    Github
+                </a>
+                <a class="apresentacao__links__link" href="https://unifor.br/web/pesquisa-inovacao/giralab" target="_blank">
+                    <img src="uniforlogo.png">
+                    Gira Lab
+                </a>
+                <a class="apresentacao__links__link" href="https://www.linkedin.com/in/guadalupe-prado-506070269" target="_blank">
+                    <img src="linkedIn.png">
+                    LinkedIn
+                </a>
+                <a class="apresentacao__links__link" href="mailto:guadalupepradosr@gmail.com">
+                    <img src="gmail.png">
+                    Gmail
+                </a>
+
+                <a class="apresentacao__links__link" href="https://www.youtube.com/channel/UCjU4qzXtmGNZ2n-lT7WOkDQ" target="_blank">
+                    <img src="Background Eraser.png">
+                    YouTube
+                </a>
+                
+            </div>
+        </section>
+                <img class="apresentacao__imagem" src="Foto Perfil - Copia.JPG" alt="Guadalupe Prado">
+    </main>
+    <footer class="rodape">
+        <p>Desenvolvido por Guadalupe Prado.</p>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const elementsToAnimate = document.querySelectorAll(".apresentacao__conteudo__titulo, .apresentacao__conteudo__texto, .apresentacao__imagem");
+
+            function checkVisibility() {
+                const triggerBottom = window.innerHeight * 0.85;
+
+                elementsToAnimate.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+
+                    if (elementTop < triggerBottom) {
+                        element.classList.add("animate");
+                    }
+                });
+            }
+
+            window.addEventListener("scroll", checkVisibility);
+            checkVisibility(); // Initial check on load
+        });
+    </script>
+</body>
+</html>
