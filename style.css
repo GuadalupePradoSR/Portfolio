@@ -133,14 +133,19 @@ body {
     transform: scale(1.1);
 }
 
+
 .apresentacao__imagens {
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
     width: 50%;
-    height: auto;
+    margin: 0 auto;
 }
 
 .apresentacao__imagem {
-    width: 50%;
+    width: 100%;
+    height: auto;
+    display: block;
     opacity: 0;
     transform: translateX(20px);
     transition: all 1.0s ease-in-out;
