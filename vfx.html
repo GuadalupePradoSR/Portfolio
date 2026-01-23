@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VFX & Motion</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Canvas 3D Background */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ========== GAME-STYLE TITLE ========== */
+        .vfx-title {
+            font-size: 4rem;
+            font-family: var(--fonte-primaria);
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            position: relative;
+            display: inline-block;
+            animation: title-float 3s ease-in-out infinite;
+            text-shadow: 
+                0 0 5px rgba(255, 107, 53, 0.3),
+                0 0 10px rgba(255, 20, 147, 0.2);
+        }
+
+        @keyframes title-float {
+            0%, 100% { transform: translateY(0) rotateX(0deg); }
+            50% { transform: translateY(-15px) rotateX(5deg); }
+        }
+
+        /* Floating Elements - Game Style */
+        .floating-element {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            animation: float-3d 8s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+
+        .floating-element:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+        .floating-element:nth-child(2) { top: 20%; right: 10%; animation-delay: 2s; }
+        .floating-element:nth-child(3) { bottom: 30%; left: 15%; animation-delay: 4s; }
+        .floating-element:nth-child(4) { bottom: 20%; right: 5%; animation-delay: 6s; }
+
+        @keyframes float-3d {
+            0%, 100% { 
+                transform: translateY(0) translateZ(0) rotateY(0deg) scale(1); 
+                opacity: 0.6;
+            }
+            25% { 
+                transform: translateY(-40px) translateZ(50px) rotateY(90deg) scale(1.2); 
+                opacity: 1;
+            }
+            50% { 
+                transform: translateY(-20px) translateZ(0) rotateY(180deg) scale(1); 
+                opacity: 0.8;
+            }
+            75% { 
+                transform: translateY(-60px) translateZ(-50px) rotateY(270deg) scale(1.1); 
+                opacity: 1;
+            }
+        }
+
+        /* Particle Container */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--cor-terciaria);
+            border-radius: 50%;
+            animation: rise 8s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes rise {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) scale(1.5);
+            }
+        }
+
+        /* ========== 3D FRAME VIDEO CARDS - GAME STYLE ========== */
+        .vfx-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            padding: 3rem 0;
+            position: relative;
+            z-index: 1;
+            perspective: 2000px;
+        }
+
+        .vfx-card {
+            background: linear-gradient(145deg, rgba(20, 20, 30, 0.9), rgba(10, 10, 20, 0.95));
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            animation: card-idle 4s ease-in-out infinite;
+        }
+
+        .vfx-card::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 23px;
+            background: linear-gradient(135deg, #ff6b35, #ff1493, #ff8c42, #ff6b35);
+            background-size: 300% 300%;
+            z-index: -1;
+            animation: border-glow 4s linear infinite;
+            filter: blur(2px);
+        }
+
+        .vfx-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            background: linear-gradient(145deg, rgba(20, 20, 30, 0.95), rgba(10, 10, 20, 0.98));
+            z-index: -1;
+        }
+
+        @keyframes card-idle {
+            0%, 100% { transform: rotateX(2deg) rotateY(-2deg) translateZ(0); }
+            50% { transform: rotateX(-2deg) rotateY(2deg) translateZ(10px); }
+        }
+
+        @keyframes border-glow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .vfx-card:hover {
+            transform: rotateX(5deg) rotateY(-5deg) translateZ(50px) scale(1.05);
+            animation: none;
+            box-shadow: 
+                0 30px 80px rgba(255, 107, 53, 0.4),
+                0 0 60px rgba(255, 20, 147, 0.3),
+                inset 0 0 30px rgba(255, 107, 53, 0.1);
+        }
+
+        /* 3D Frame for video */
+        .video-frame {
+            position: relative;
+            transform-style: preserve-3d;
+            margin-bottom: 1.5rem;
+        }
+
+        .video-frame::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: 8px;
+            bottom: 8px;
+            background: linear-gradient(135deg, #ff6b35, #ff1493);
+            border-radius: 18px;
+            transform: translateZ(-20px);
+            opacity: 0.5;
+        }
+
+        .video-frame::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: -8px;
+            bottom: -8px;
+            background: linear-gradient(135deg, #ff1493, #ff6b35);
+            border-radius: 18px;
+            transform: translateZ(-40px);
+            opacity: 0.3;
+        }
+
+        .vfx-card__video {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 16px;
+            position: relative;
+            z-index: 1;
+            border: 3px solid rgba(255, 107, 53, 0.5);
+            box-shadow: 
+                0 0 20px rgba(255, 107, 53, 0.3),
+                inset 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Corner decorations - Game UI style */
+        .card-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            z-index: 10;
+        }
+
+        .card-corner::before,
+        .card-corner::after {
+            content: '';
+            position: absolute;
+            background: linear-gradient(90deg, #ff6b35, #ff1493);
+        }
+
+        .card-corner.top-left { top: 10px; left: 10px; }
+        .card-corner.top-right { top: 10px; right: 10px; }
+        .card-corner.bottom-left { bottom: 10px; left: 10px; }
+        .card-corner.bottom-right { bottom: 10px; right: 10px; }
+
+        .card-corner.top-left::before,
+        .card-corner.bottom-left::before { width: 3px; height: 100%; left: 0; }
+        .card-corner.top-left::after,
+        .card-corner.top-right::after { height: 3px; width: 100%; top: 0; }
+        .card-corner.top-right::before,
+        .card-corner.bottom-right::before { width: 3px; height: 100%; right: 0; }
+        .card-corner.bottom-left::after,
+        .card-corner.bottom-right::after { height: 3px; width: 100%; bottom: 0; }
+
+        .vfx-card__title {
+            font-family: var(--fonte-primaria);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #fff;
+            margin-bottom: 1rem;
+            position: relative;
+            text-shadow: 
+                0 0 10px #ff6b35,
+                0 0 20px #ff1493;
+            animation: text-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes text-glow {
+            0% { text-shadow: 0 0 10px #ff6b35, 0 0 20px #ff1493; }
+            100% { text-shadow: 0 0 20px #ff1493, 0 0 40px #ff6b35, 0 0 60px #ff1493; }
+        }
+
+        .vfx-card__description {
+            font-family: var(--fonte-secundaria);
+            font-size: 1rem;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.7;
+            position: relative;
+        }
+
+        /* Tool Badges - Game Style */
+        .tool-badges {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .tool-badge {
+            padding: 10px 20px;
+            border-radius: 0;
+            font-family: var(--fonte-primaria);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+            transition: all 0.3s ease;
+        }
+
+        .tool-badge.blender {
+            background: linear-gradient(135deg, #ff6b35, #ff8c42);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+        }
+
+        .tool-badge.davinci {
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
+        }
+
+        .tool-badge:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.6);
+        }
+
+        /* ========== FLOATING SKILL TAGS - GAME STYLE ========== */
+        .vfx-skills {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin: 4rem 0;
+            position: relative;
+            z-index: 1;
+            perspective: 1000px;
+        }
+
+        .skill-tag {
+            padding: 25px 50px;
+            font-family: var(--fonte-primaria);
+            font-weight: 700;
+            font-size: 1.8rem;
+            cursor: pointer;
+            position: relative;
+            background: linear-gradient(145deg, rgba(20, 20, 30, 0.8), rgba(10, 10, 20, 0.9));
+            border: 2px solid transparent;
+            border-image: linear-gradient(135deg, #ff6b35, #ff1493) 1;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: skill-float 5s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+        }
+
+        .skill-tag:nth-child(1) { animation-delay: 0s; }
+        .skill-tag:nth-child(3) { animation-delay: 1s; }
+        .skill-tag:nth-child(5) { animation-delay: 2s; }
+        .skill-tag:nth-child(7) { animation-delay: 3s; }
+        .skill-tag:nth-child(9) { animation-delay: 4s; }
+
+        @keyframes skill-float {
+            0%, 100% { 
+                transform: translateY(0) rotateX(0deg) rotateY(0deg);
+                box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+            }
+            25% {
+                transform: translateY(-20px) rotateX(10deg) rotateY(-5deg);
+                box-shadow: 0 30px 50px rgba(255, 20, 147, 0.4);
+            }
+            50% { 
+                transform: translateY(-10px) rotateX(-5deg) rotateY(5deg);
+                box-shadow: 0 20px 40px rgba(255, 107, 53, 0.5);
+            }
+            75% {
+                transform: translateY(-25px) rotateX(5deg) rotateY(-10deg);
+                box-shadow: 0 35px 60px rgba(255, 20, 147, 0.3);
+            }
+        }
+
+        .skill-tag::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(255, 20, 147, 0.2));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .skill-tag::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .skill-tag:hover {
+            transform: translateY(-30px) scale(1.15) rotateX(15deg) !important;
+            animation-play-state: paused;
+            box-shadow: 
+                0 40px 80px rgba(255, 107, 53, 0.5),
+                0 0 50px rgba(255, 20, 147, 0.4),
+                inset 0 0 20px rgba(255, 107, 53, 0.2);
+            text-shadow: 
+                0 0 30px #ff6b35,
+                0 0 60px #ff1493;
+        }
+
+        .skill-tag:hover::before {
+            opacity: 1;
+        }
+
+        .skill-tag:hover::after {
+            left: 100%;
+        }
+
+        .skill-tag .icon {
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 2rem;
+            filter: drop-shadow(0 0 15px currentColor);
+            animation: icon-bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes icon-bounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(10deg); }
+        }
+
+        /* Glowing connector lines */
+        .skill-divider {
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b35, #ff1493);
+            align-self: center;
+            position: relative;
+            animation: line-pulse 2s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.8);
+        }
+
+        .skill-divider::before,
+        .skill-divider::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ff6b35;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 15px #ff6b35;
+        }
+
+        .skill-divider::before { left: -4px; }
+        .skill-divider::after { right: -4px; background: #ff1493; box-shadow: 0 0 15px #ff1493; }
+
+        @keyframes line-pulse {
+            0%, 100% { opacity: 0.5; transform: scaleX(1); }
+            50% { opacity: 1; transform: scaleX(1.2); }
+        }
+
+        @media (max-width: 768px) {
+            .skill-tag {
+                font-size: 1.2rem;
+                padding: 15px 30px;
+                letter-spacing: 2px;
+            }
+            
+            .skill-divider {
+                display: none;
+            }
+        }
+
+        /* Mouse Trail Effect - Game Style */
+        .trail {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ff6b35, #ff1493, transparent);
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: screen;
+            filter: blur(3px);
+            animation: trail-pulse 0.5s ease-out;
+        }
+
+        @keyframes trail-pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.3); opacity: 0; }
+        }
+
+        /* Intro Animation */
+        .vfx-intro {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+            z-index: 1;
+            padding: 3rem;
+            perspective: 1000px;
+        }
+
+        .vfx-subtitle {
+            font-family: var(--fonte-secundaria);
+            font-size: 1.4rem;
+            color: rgba(255,255,255,0.9);
+            margin-top: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.5s;
+            line-height: 2;
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+        }
+
+        .vfx-subtitle strong {
+            background: linear-gradient(90deg, #ff6b35, #ff1493);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            text-shadow: none;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) rotateX(20deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+
+        /* Section Title - Game Style */
+        .section-title-game {
+            text-align: center;
+            margin: 4rem 0;
+            font-family: var(--fonte-primaria);
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #fff;
+            position: relative;
+            text-shadow: 
+                0 0 20px #ff6b35,
+                0 0 40px #ff1493;
+        }
+
+        .section-title-game::before,
+        .section-title-game::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff6b35, #ff1493);
+        }
+
+        .section-title-game::before {
+            right: calc(50% + 200px);
+        }
+
+        .section-title-game::after {
+            left: calc(50% + 200px);
+            background: linear-gradient(90deg, #ff1493, #ff6b35, transparent);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .vfx-title {
+                font-size: 2.5rem;
+                letter-spacing: 3px;
+            }
+            
+            .vfx-gallery {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                gap: 2rem;
+            }
+
+            .vfx-skills {
+                gap: 20px;
+            }
+
+            .vfx-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .section-title-game::before,
+            .section-title-game::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Floating Game Elements -->
+    <div class="floating-element" style="font-size: 4rem; color: #ff6b35;">⬡</div>
+    <div class="floating-element" style="font-size: 3rem; color: #ff1493;">◈</div>
+    <div class="floating-element" style="font-size: 3.5rem; color: #ff8c42;">✦</div>
+    <div class="floating-element" style="font-size: 4rem; color: #ff69b4;">⬢</div>
+
+    <header class="cabecalho">
+        <nav class="cabecalho__menu">
+            <a class="cabecalho__menu__link" href="index.html">Início</a>
+            <a class="cabecalho__menu__link" href="about.html">Especializações</a>
+            <a class="cabecalho__menu__link" href="experiences.html">Experiências</a>
+            <a class="cabecalho__menu__link" href="unity.html">Unity</a>
+            <a class="cabecalho__menu__link" href="vfx.html">VFX</a>
+            <a class="cabecalho__menu__link" href="vfxingles.html">ENGLISH VERSION</a>
+        </nav>
+    </header>
+
+    <main class="apresentacao">
+        <section class="apresentacao__conteudo" style="width: 100%; max-width: 1200px;">
+            
+            <!-- Intro Section -->
+            <div class="vfx-intro">
+                <h1 class="vfx-title">✨ VFX & Motion Design ✨</h1>
+                <p class="vfx-subtitle">
+                    Criando magia visual através de efeitos especiais e composição de vídeo.<br>
+                    Transformando ideias em experiências visuais imersivas com <strong>Blender</strong> e <strong>DaVinci Resolve</strong>.
+                </p>
+            </div>
+
+            <!-- Skills Tags -->
+            <div class="vfx-skills">
+                <span class="skill-tag" data-text="🎨 Modelagem 3D"><span class="icon">🎨</span>Modelagem 3D</span>
+                <span class="skill-divider"></span>
+                <span class="skill-tag" data-text="✨ VFX"><span class="icon">✨</span>VFX</span>
+                <span class="skill-divider"></span>
+                <span class="skill-tag" data-text="🎬 Composição"><span class="icon">🎬</span>Composição</span>
+                <span class="skill-divider"></span>
+                <span class="skill-tag" data-text="🚀 Motion Design"><span class="icon">🚀</span>Motion Design</span>
+                <span class="skill-divider"></span>
+                <span class="skill-tag" data-text="🎭 Color Grading"><span class="icon">🎭</span>Color Grading</span>
+            </div>
+
+            <!-- Video Gallery -->
+            <h2 class="section-title-game">
+                🎬 Meus Trabalhos 🎬
+            </h2>
+
+            <div class="vfx-gallery">
+                <!-- Video Card 1 -->
+                <div class="vfx-card">
+                    <div class="card-corner top-left"></div>
+                    <div class="card-corner top-right"></div>
+                    <div class="card-corner bottom-left"></div>
+                    <div class="card-corner bottom-right"></div>
+                    <div class="video-frame">
+                        <iframe class="vfx-card__video" 
+                                src="https://www.youtube.com/embed/VIDEO_ID_1" 
+                                title="VFX Project 1"
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <h3 class="vfx-card__title">⚔️ Projeto VFX #1</h3>
+                    <p class="vfx-card__description">
+                        Descrição do projeto com efeitos visuais criados usando Blender e DaVinci Resolve.
+                    </p>
+                    <div class="tool-badges">
+                        <span class="tool-badge blender">▸ Blender</span>
+                        <span class="tool-badge davinci">▸ DaVinci Resolve</span>
+                    </div>
+                </div>
+
+                <!-- Video Card 2 -->
+                <div class="vfx-card">
+                    <div class="card-corner top-left"></div>
+                    <div class="card-corner top-right"></div>
+                    <div class="card-corner bottom-left"></div>
+                    <div class="card-corner bottom-right"></div>
+                    <div class="video-frame">
+                        <iframe class="vfx-card__video" 
+                                src="https://www.youtube.com/embed/VIDEO_ID_2" 
+                                title="VFX Project 2"
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <h3 class="vfx-card__title">🎯 Projeto VFX #2</h3>
+                    <p class="vfx-card__description">
+                        Composição de efeitos especiais com tracking de movimento e integração 3D.
+                    </p>
+                    <div class="tool-badges">
+                        <span class="tool-badge blender">▸ Blender</span>
+                        <span class="tool-badge davinci">▸ DaVinci Resolve</span>
+                    </div>
+                </div>
+
+                <!-- Video Card 3 -->
+                <div class="vfx-card">
+                    <div class="card-corner top-left"></div>
+                    <div class="card-corner top-right"></div>
+                    <div class="card-corner bottom-left"></div>
+                    <div class="card-corner bottom-right"></div>
+                    <div class="video-frame">
+                        <iframe class="vfx-card__video" 
+                                src="https://www.youtube.com/embed/VIDEO_ID_3" 
+                                title="VFX Project 3"
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <h3 class="vfx-card__title">🚀 Projeto VFX #3</h3>
+                    <p class="vfx-card__description">
+                        Motion graphics e efeitos de partículas criados para vídeos dinâmicos.
+                    </p>
+                    <div class="tool-badges">
+                        <span class="tool-badge blender">▸ Blender</span>
+                        <span class="tool-badge davinci">▸ DaVinci Resolve</span>
+                    </div>
+                </div>
+
+                <!-- Video Card 4 -->
+                <div class="vfx-card">
+                    <div class="card-corner top-left"></div>
+                    <div class="card-corner top-right"></div>
+                    <div class="card-corner bottom-left"></div>
+                    <div class="card-corner bottom-right"></div>
+                    <div class="video-frame">
+                        <iframe class="vfx-card__video" 
+                                src="https://www.youtube.com/embed/VIDEO_ID_4" 
+                                title="VFX Project 4"
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <h3 class="vfx-card__title">🎮 Projeto VFX #4</h3>
+                    <p class="vfx-card__description">
+                        Animação 3D integrada com footage real usando técnicas de VFX profissionais.
+                    </p>
+                    <div class="tool-badges">
+                        <span class="tool-badge blender">▸ Blender</span>
+                        <span class="tool-badge davinci">▸ DaVinci Resolve</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="apresentacao__links" style="margin-top: 50px;">
+                <h2 class="apresentacao__links__subtitulo">Confira mais no meu canal:</h2>
+                <a class="apresentacao__links__link" href="https://www.youtube.com/channel/UCjU4qzXtmGNZ2n-lT7WOkDQ" target="_blank">
+                    <img src="Background Eraser.png" style="max-width: 30px;">
+                    YouTube
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="rodape">
+        <p>Desenvolvido por Guadalupe Prado.</p>
+    </footer>
+
+    <!-- Three.js for 3D Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <script>
+        // ========== THREE.JS 3D FLOATING OBJECTS WITH MESH ==========
+        const canvas = document.getElementById('bg-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Lighting for 3D effect
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0xff6b35, 2, 100);
+        pointLight1.position.set(10, 10, 10);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0xff1493, 2, 100);
+        pointLight2.position.set(-10, -10, 10);
+        scene.add(pointLight2);
+
+        const pointLight3 = new THREE.PointLight(0xffffff, 1, 100);
+        pointLight3.position.set(0, 0, 20);
+        scene.add(pointLight3);
+
+        // Create floating geometric shapes with solid mesh + wireframe overlay
+        const shapes = [];
+        const geometries = [
+            new THREE.IcosahedronGeometry(0.8, 1),
+            new THREE.OctahedronGeometry(0.7, 0),
+            new THREE.DodecahedronGeometry(0.6, 0),
+            new THREE.TorusGeometry(0.5, 0.2, 16, 32),
+            new THREE.TorusKnotGeometry(0.4, 0.15, 100, 16),
+            new THREE.ConeGeometry(0.5, 1, 8),
+            new THREE.BoxGeometry(0.7, 0.7, 0.7),
+            new THREE.SphereGeometry(0.5, 16, 16)
+        ];
+
+        const colors = [
+            { solid: 0xff6b35, wire: 0xffffff },   // Orange + White
+            { solid: 0xff1493, wire: 0xffffff },   // Pink + White
+            { solid: 0xff8c42, wire: 0xffb6c1 },   // Light Orange + Light Pink
+            { solid: 0xffffff, wire: 0xff6b35 },   // White + Orange
+            { solid: 0xffb6c1, wire: 0xff1493 }    // Light Pink + Pink
+        ];
+
+        for (let i = 0; i < 20; i++) {
+            const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+            const colorSet = colors[Math.floor(Math.random() * colors.length)];
+            
+            // Solid material with transparency
+            const solidMaterial = new THREE.MeshPhongMaterial({
+                color: colorSet.solid,
+                transparent: true,
+                opacity: 0.15,
+                shininess: 100,
+                side: THREE.DoubleSide
+            });
+            
+            // Wireframe material
+            const wireMaterial = new THREE.MeshBasicMaterial({
+                color: colorSet.wire,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.6
+            });
+            
+            // Create group to hold both meshes
+            const group = new THREE.Group();
+            
+            const solidMesh = new THREE.Mesh(geometry, solidMaterial);
+            const wireMesh = new THREE.Mesh(geometry.clone(), wireMaterial);
+            
+            group.add(solidMesh);
+            group.add(wireMesh);
+            
+            // Random positions
+            const spread = 25;
+            group.position.set(
+                (Math.random() - 0.5) * spread,
+                (Math.random() - 0.5) * spread,
+                (Math.random() - 0.5) * 15 - 8
+            );
+            
+            group.rotation.set(
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                Math.random() * Math.PI
+            );
+            
+            const scale = Math.random() * 0.8 + 0.5;
+            group.scale.set(scale, scale, scale);
+            
+            group.userData = {
+                rotationSpeed: {
+                    x: (Math.random() - 0.5) * 0.015,
+                    y: (Math.random() - 0.5) * 0.015,
+                    z: (Math.random() - 0.5) * 0.01
+                },
+                floatSpeed: Math.random() * 0.5 + 0.3,
+                floatOffset: Math.random() * Math.PI * 2,
+                originalY: group.position.y,
+                originalX: group.position.x
+            };
+            
+            shapes.push(group);
+            scene.add(group);
+        }
+
+        // Add some edge-highlighted objects (like Blender edit mode)
+        for (let i = 0; i < 5; i++) {
+            const geo = new THREE.IcosahedronGeometry(1.2, 2);
+            
+            // Create edges geometry for that sharp edge look
+            const edges = new THREE.EdgesGeometry(geo, 15);
+            const edgeMaterial = new THREE.LineBasicMaterial({ 
+                color: i % 2 === 0 ? 0xff6b35 : 0xff1493,
+                transparent: true,
+                opacity: 0.8
+            });
+            const edgeMesh = new THREE.LineSegments(edges, edgeMaterial);
+            
+            // Add subtle fill
+            const fillMaterial = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.05,
+                side: THREE.DoubleSide
+            });
+            const fillMesh = new THREE.Mesh(geo, fillMaterial);
+            
+            const group = new THREE.Group();
+            group.add(fillMesh);
+            group.add(edgeMesh);
+            
+            group.position.set(
+                (Math.random() - 0.5) * 30,
+                (Math.random() - 0.5) * 30,
+                (Math.random() - 0.5) * 10 - 10
+            );
+            
+            group.userData = {
+                rotationSpeed: {
+                    x: (Math.random() - 0.5) * 0.008,
+                    y: (Math.random() - 0.5) * 0.012,
+                    z: (Math.random() - 0.5) * 0.005
+                },
+                floatSpeed: Math.random() * 0.3 + 0.2,
+                floatOffset: Math.random() * Math.PI * 2,
+                originalY: group.position.y,
+                originalX: group.position.x
+            };
+            
+            shapes.push(group);
+            scene.add(group);
+        }
+
+        camera.position.z = 8;
+
+        // Mouse interaction
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetMouseX = 0;
+        let targetMouseY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            targetMouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            targetMouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.001;
+            
+            // Smooth mouse following
+            mouseX += (targetMouseX - mouseX) * 0.05;
+            mouseY += (targetMouseY - mouseY) * 0.05;
+            
+            // Animate point lights
+            pointLight1.position.x = Math.sin(time * 0.5) * 15;
+            pointLight1.position.y = Math.cos(time * 0.3) * 15;
+            pointLight2.position.x = Math.cos(time * 0.4) * 15;
+            pointLight2.position.y = Math.sin(time * 0.6) * 15;
+            
+            shapes.forEach((shape) => {
+                // Rotation
+                shape.rotation.x += shape.userData.rotationSpeed.x;
+                shape.rotation.y += shape.userData.rotationSpeed.y;
+                shape.rotation.z += shape.userData.rotationSpeed.z;
+                
+                // Floating motion
+                shape.position.y = shape.userData.originalY + 
+                    Math.sin(time * shape.userData.floatSpeed + shape.userData.floatOffset) * 0.5;
+                shape.position.x = shape.userData.originalX + 
+                    Math.cos(time * shape.userData.floatSpeed * 0.7 + shape.userData.floatOffset) * 0.3;
+            });
+            
+            // Camera follows mouse smoothly
+            camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
+            camera.position.y += (mouseY * 2 - camera.position.y) * 0.02;
+            camera.lookAt(scene.position);
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ========== PARTICLE GENERATOR ==========
+        const particlesContainer = document.getElementById('particles');
+        
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            particle.style.width = (Math.random() * 4 + 2) + 'px';
+            particle.style.height = particle.style.width;
+            
+            const colors = ['#ff6b35', '#ff1493', '#ffffff', '#ff8c42', '#ffb6c1'];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
+            
+            particlesContainer.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 10000);
+        }
+        
+        // Create particles periodically
+        setInterval(createParticle, 200);
+
+        // ========== MOUSE TRAIL EFFECT ==========
+        const trails = [];
+        const maxTrails = 12;
+
+        document.addEventListener('mousemove', (e) => {
+            const trail = document.createElement('div');
+            trail.className = 'trail';
+            trail.style.left = e.clientX - 12 + 'px';
+            trail.style.top = e.clientY - 12 + 'px';
+            document.body.appendChild(trail);
+            trails.push(trail);
+
+            if (trails.length > maxTrails) {
+                const oldTrail = trails.shift();
+                oldTrail.remove();
+            }
+
+            setTimeout(() => {
+                trail.style.opacity = '0';
+                trail.style.transform = 'scale(0.3)';
+                trail.style.transition = 'all 0.4s ease';
+            }, 50);
+
+            setTimeout(() => {
+                if (trail.parentNode) {
+                    trail.remove();
+                    const index = trails.indexOf(trail);
+                    if (index > -1) trails.splice(index, 1);
+                }
+            }, 400);
+        });
+
+        // ========== SCROLL ANIMATIONS ==========
+        document.addEventListener("DOMContentLoaded", function() {
+            const elementsToAnimate = document.querySelectorAll(".vfx-card, .skill-tag");
+
+            function checkVisibility() {
+                const triggerBottom = window.innerHeight * 0.85;
+
+                elementsToAnimate.forEach((element, index) => {
+                    const elementTop = element.getBoundingClientRect().top;
+
+                    if (elementTop < triggerBottom) {
+                        setTimeout(() => {
+                            element.style.opacity = '1';
+                            element.style.transform = 'translateY(0)';
+                        }, index * 100);
+                    }
+                });
+            }
+
+            // Initial styles for animation
+            elementsToAnimate.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(30px)';
+                element.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            });
+
+            window.addEventListener("scroll", checkVisibility);
+            checkVisibility();
+        });
+
+        // ========== SKILL TAG INTERACTION ==========
+        document.querySelectorAll('.skill-tag').forEach(tag => {
+            tag.addEventListener('mouseenter', () => {
+                tag.style.textShadow = '0 0 40px rgba(255, 107, 53, 0.8), 0 0 80px rgba(255, 20, 147, 0.5)';
+            });
+            
+            tag.addEventListener('mouseleave', () => {
+                tag.style.textShadow = '';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -6,98 +6,940 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unity</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* ========== GRADIENT BACKGROUND ========== */
+        body {
+            background: linear-gradient(135deg, #1a0a2e 0%, #16213e 30%, #0f3460 60%, #1a1a2e 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Override main layout */
+        .apresentacao {
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(255, 107, 53, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(255, 20, 147, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(100, 100, 255, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ========== 3D FLOATING OBJECTS - GLOSSY STYLE ========== */
+        .floating-3d-objects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Sphere - Glossy 3D */
+        .sphere {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255, 255, 255, 0.8) 0%, 
+                rgba(255, 107, 53, 0.9) 20%, 
+                rgba(255, 20, 147, 0.8) 60%, 
+                rgba(100, 50, 150, 0.9) 100%);
+            box-shadow: 
+                inset -20px -20px 40px rgba(0, 0, 0, 0.3),
+                inset 10px 10px 20px rgba(255, 255, 255, 0.4),
+                0 20px 60px rgba(255, 107, 53, 0.4),
+                0 0 80px rgba(255, 20, 147, 0.3);
+            animation: float-sphere 8s ease-in-out infinite;
+        }
+
+        .sphere-1 {
+            width: 100px;
+            height: 100px;
+            top: 5%;
+            right: 3%;
+            animation-delay: 0s;
+        }
+
+        .sphere-2 {
+            width: 70px;
+            height: 70px;
+            top: 60%;
+            left: 2%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255, 255, 255, 0.9) 0%, 
+                rgba(100, 200, 255, 0.9) 30%, 
+                rgba(80, 120, 200, 0.8) 100%);
+            box-shadow: 
+                inset -15px -15px 30px rgba(0, 0, 0, 0.2),
+                inset 8px 8px 15px rgba(255, 255, 255, 0.5),
+                0 15px 40px rgba(100, 200, 255, 0.4);
+            animation-delay: 2s;
+        }
+
+        .sphere-3 {
+            width: 50px;
+            height: 50px;
+            bottom: 10%;
+            right: 3%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255, 255, 255, 0.9) 0%, 
+                rgba(255, 150, 200, 0.9) 30%, 
+                rgba(200, 100, 150, 0.8) 100%);
+            box-shadow: 
+                inset -10px -10px 20px rgba(0, 0, 0, 0.2),
+                inset 5px 5px 10px rgba(255, 255, 255, 0.5),
+                0 10px 30px rgba(255, 150, 200, 0.4);
+            animation-delay: 4s;
+        }
+
+        .sphere-4 {
+            width: 35px;
+            height: 35px;
+            top: 15%;
+            left: 3%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255, 255, 255, 0.9) 0%, 
+                rgba(255, 200, 100, 0.9) 30%, 
+                rgba(255, 150, 50, 0.8) 100%);
+            box-shadow: 
+                inset -8px -8px 16px rgba(0, 0, 0, 0.2),
+                inset 4px 4px 8px rgba(255, 255, 255, 0.5),
+                0 8px 25px rgba(255, 200, 100, 0.4);
+            animation-delay: 1s;
+        }
+
+        @keyframes float-sphere {
+            0%, 100% { 
+                transform: translateY(0) translateX(0) scale(1); 
+            }
+            25% { 
+                transform: translateY(-30px) translateX(15px) scale(1.05); 
+            }
+            50% { 
+                transform: translateY(-15px) translateX(-10px) scale(1); 
+            }
+            75% { 
+                transform: translateY(-40px) translateX(5px) scale(1.03); 
+            }
+        }
+
+        /* Cube - 3D CSS */
+        .cube-container {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            perspective: 500px;
+            animation: float-cube 10s ease-in-out infinite;
+        }
+
+        .cube-container-1 {
+            top: 35%;
+            left: 2%;
+        }
+
+        .cube-container-2 {
+            top: 40%;
+            right: 2%;
+            width: 50px;
+            height: 50px;
+            animation-delay: 3s;
+        }
+
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate-cube 15s linear infinite;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            opacity: 0.9;
+        }
+
+        .cube-face.front {
+            background: linear-gradient(135deg, rgba(100, 150, 255, 0.9), rgba(80, 100, 200, 0.8));
+            transform: translateZ(40px);
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .cube-face.back {
+            background: linear-gradient(135deg, rgba(80, 100, 200, 0.8), rgba(60, 80, 180, 0.7));
+            transform: rotateY(180deg) translateZ(40px);
+        }
+
+        .cube-face.left {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.9), rgba(80, 150, 220, 0.8));
+            transform: rotateY(-90deg) translateZ(40px);
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .cube-face.right {
+            background: linear-gradient(135deg, rgba(150, 100, 255, 0.9), rgba(120, 80, 200, 0.8));
+            transform: rotateY(90deg) translateZ(40px);
+        }
+
+        .cube-face.top {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(200, 220, 255, 0.8));
+            transform: rotateX(90deg) translateZ(40px);
+        }
+
+        .cube-face.bottom {
+            background: linear-gradient(135deg, rgba(50, 50, 100, 0.8), rgba(30, 30, 80, 0.9));
+            transform: rotateX(-90deg) translateZ(40px);
+        }
+
+        .cube-container-2 .cube-face.front { transform: translateZ(25px); }
+        .cube-container-2 .cube-face.back { transform: rotateY(180deg) translateZ(25px); }
+        .cube-container-2 .cube-face.left { transform: rotateY(-90deg) translateZ(25px); }
+        .cube-container-2 .cube-face.right { transform: rotateY(90deg) translateZ(25px); }
+        .cube-container-2 .cube-face.top { transform: rotateX(90deg) translateZ(25px); }
+        .cube-container-2 .cube-face.bottom { transform: rotateX(-90deg) translateZ(25px); }
+
+        @keyframes rotate-cube {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        @keyframes float-cube {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-25px); }
+        }
+
+        /* Torus / Ring */
+        .ring {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 15px solid;
+            border-radius: 50%;
+            border-color: rgba(255, 107, 53, 0.7) rgba(255, 20, 147, 0.7) rgba(255, 150, 100, 0.7) rgba(255, 100, 150, 0.7);
+            box-shadow: 
+                0 0 30px rgba(255, 107, 53, 0.4),
+                inset 0 0 20px rgba(255, 20, 147, 0.3);
+            animation: float-ring 12s ease-in-out infinite, spin-ring 20s linear infinite;
+        }
+
+        .ring-1 {
+            top: 25%;
+            right: 1%;
+            width: 70px;
+            height: 70px;
+            border-width: 10px;
+            transform: rotateX(60deg);
+        }
+
+        .ring-2 {
+            bottom: 5%;
+            left: 2%;
+            width: 70px;
+            height: 70px;
+            border-width: 10px;
+            border-color: rgba(100, 200, 255, 0.7) rgba(150, 100, 255, 0.7) rgba(100, 150, 255, 0.7) rgba(200, 150, 255, 0.7);
+            box-shadow: 
+                0 0 25px rgba(100, 200, 255, 0.4),
+                inset 0 0 15px rgba(150, 100, 255, 0.3);
+            animation-delay: 2s;
+        }
+
+        @keyframes float-ring {
+            0%, 100% { transform: translateY(0) rotateX(60deg) rotateZ(0deg); }
+            50% { transform: translateY(-20px) rotateX(60deg) rotateZ(180deg); }
+        }
+
+        @keyframes spin-ring {
+            0% { transform: rotateX(60deg) rotateZ(0deg); }
+            100% { transform: rotateX(60deg) rotateZ(360deg); }
+        }
+
+        /* Cone / Pyramid */
+        .cone {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 60px solid;
+            border-bottom-color: rgba(255, 200, 100, 0.8);
+            filter: drop-shadow(0 10px 20px rgba(255, 200, 100, 0.4));
+            animation: float-cone 9s ease-in-out infinite;
+        }
+
+        .cone::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: -20px;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 45px solid rgba(255, 230, 150, 0.6);
+        }
+
+        .cone-1 {
+            bottom: 15%;
+            right: 1%;
+        }
+
+        .cone-2 {
+            top: 50%;
+            left: 1%;
+            transform: scale(0.6) rotate(15deg);
+            border-bottom-color: rgba(255, 150, 200, 0.8);
+            animation-delay: 1.5s;
+        }
+
+        @keyframes float-cone {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-35px) rotate(10deg); }
+        }
+
+        /* Abstract Blob */
+        .blob {
+            position: absolute;
+            background: linear-gradient(135deg, 
+                rgba(255, 107, 53, 0.7) 0%, 
+                rgba(255, 20, 147, 0.6) 50%, 
+                rgba(150, 50, 200, 0.7) 100%);
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            box-shadow: 
+                inset -15px -15px 30px rgba(0, 0, 0, 0.2),
+                inset 10px 10px 20px rgba(255, 255, 255, 0.3),
+                0 15px 40px rgba(255, 107, 53, 0.3);
+            animation: morph-blob 15s ease-in-out infinite, float-blob 8s ease-in-out infinite;
+        }
+
+        .blob-1 {
+            width: 100px;
+            height: 100px;
+            top: 3%;
+            left: 1%;
+        }
+
+        @keyframes morph-blob {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            50% { border-radius: 50% 60% 30% 60% / 30% 50% 70% 50%; }
+            75% { border-radius: 40% 50% 60% 50% / 60% 40% 50% 60%; }
+        }
+
+        @keyframes float-blob {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        /* ========== TITLE STYLE ========== */
+        .unity-title {
+            font-size: 5rem;
+            font-family: var(--fonte-primaria);
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 15px;
+            position: relative;
+            display: inline-block;
+            text-shadow: 
+                0 0 20px rgba(255, 107, 53, 0.5),
+                0 0 40px rgba(255, 20, 147, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ========== INTRO SECTION ========== */
+        .unity-intro {
+            text-align: center;
+            padding: 5rem 2rem;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+        }
+
+        .unity-subtitle {
+            font-family: var(--fonte-secundaria);
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-top: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+        }
+
+        /* ========== SKILL CARDS - GLASSMORPHISM ========== */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(280px, 400px));
+            gap: 2rem;
+            padding: 2rem;
+            margin: 3rem auto;
+            max-width: 900px;
+            position: relative;
+            z-index: 10;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 900px) {
+            .skills-container {
+                grid-template-columns: minmax(280px, 450px);
+                padding: 1rem;
+            }
+        }
+
+        .skill-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            min-width: 0;
+            width: 100%;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .skill-card:hover::before {
+            left: 100%;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 
+                0 20px 60px rgba(255, 107, 53, 0.2),
+                0 0 40px rgba(255, 20, 147, 0.1),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .skill-card__icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
+        }
+
+        .skill-card__title {
+            font-family: var(--fonte-primaria);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .skill-card__description {
+            font-family: var(--fonte-secundaria);
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.6;
+        }
+
+        /* XP Bar */
+        .skill-card__xp {
+            margin-top: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .skill-card__xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b35, #ff1493);
+            border-radius: 10px;
+            width: 0;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+
+        .skill-card__level {
+            font-family: var(--fonte-primaria);
+            font-size: 0.8rem;
+            color: rgba(255, 107, 53, 0.9);
+            margin-top: 0.5rem;
+            text-align: right;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ========== VIDEO SECTION ========== */
+        .video-section {
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: var(--fonte-primaria);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 3rem;
+            text-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .video-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        @media (max-width: 1024px) {
+            .video-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .video-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .video-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .video-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 
+                0 30px 60px rgba(255, 107, 53, 0.2),
+                0 0 50px rgba(255, 20, 147, 0.1);
+            border-color: rgba(255, 107, 53, 0.3);
+        }
+
+        .video-card__frame {
+            position: relative;
+            padding: 12px;
+        }
+
+        .video-card__video {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+        }
+
+        .video-card__info {
+            padding: 1.5rem;
+        }
+
+        .video-card__title {
+            font-family: var(--fonte-primaria);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-card__tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .video-tag {
+            padding: 6px 14px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 20px;
+            font-family: var(--fonte-primaria);
+            font-size: 0.7rem;
+            color: #ff6b35;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .video-tag:hover {
+            background: rgba(255, 107, 53, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* ========== CTA SECTION ========== */
+        .cta-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .cta-button {
+            padding: 18px 40px;
+            font-family: var(--fonte-primaria);
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), rgba(255, 20, 147, 0.3));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cta-button:hover {
+            background: linear-gradient(135deg, #ff6b35, #ff1493);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(255, 107, 53, 0.4);
+            border-color: transparent;
+        }
+
+        .cta-button img {
+            width: 22px;
+            height: 22px;
+            filter: brightness(0) invert(1);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .unity-title {
+                font-size: 3rem;
+                letter-spacing: 8px;
+            }
+
+            .sphere-1 { width: 80px; height: 80px; }
+            .sphere-2 { width: 50px; height: 50px; }
+            .cube-container { width: 50px; height: 50px; }
+            .blob-1 { width: 100px; height: 100px; }
+            .ring { width: 60px; height: 60px; border-width: 8px; }
+            
+            .section-title {
+                font-size: 1.8rem;
+                letter-spacing: 4px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- 3D Floating Objects -->
+    <div class="floating-3d-objects">
+        <!-- Spheres -->
+        <div class="sphere sphere-1"></div>
+        <div class="sphere sphere-2"></div>
+        <div class="sphere sphere-3"></div>
+        <div class="sphere sphere-4"></div>
+        
+        <!-- Cubes -->
+        <div class="cube-container cube-container-1">
+            <div class="cube">
+                <div class="cube-face front"></div>
+                <div class="cube-face back"></div>
+                <div class="cube-face left"></div>
+                <div class="cube-face right"></div>
+                <div class="cube-face top"></div>
+                <div class="cube-face bottom"></div>
+            </div>
+        </div>
+        <div class="cube-container cube-container-2">
+            <div class="cube">
+                <div class="cube-face front"></div>
+                <div class="cube-face back"></div>
+                <div class="cube-face left"></div>
+                <div class="cube-face right"></div>
+                <div class="cube-face top"></div>
+                <div class="cube-face bottom"></div>
+            </div>
+        </div>
+        
+        <!-- Rings -->
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        
+        <!-- Cones -->
+        <div class="cone cone-1"></div>
+        <div class="cone cone-2"></div>
+        
+        <!-- Blob -->
+        <div class="blob blob-1"></div>
+    </div>
+
     <header class="cabecalho">
         <nav class="cabecalho__menu">
             <a class="cabecalho__menu__link" href="indexingles.html">Home</a>
             <a class="cabecalho__menu__link" href="aboutingles.html">Specializations</a>
             <a class="cabecalho__menu__link" href="experiencesingles.html">Experiences</a>
             <a class="cabecalho__menu__link" href="unityingles.html">Unity</a>
-            <a class="cabecalho__menu__link" href="unity.html">VERSÃO PORTUGUÊS</a>
+            <a class="cabecalho__menu__link" href="vfxingles.html">VFX</a>
+            <a class="cabecalho__menu__link" href="unity.html">PORTUGUESE VERSION</a>
         </nav>
     </header>
-    <main class="apresentacao">
-        <section class="apresentacao__conteudo">
-            <h1 class="apresentacao__conteudo__titulo">Unity</h1>
-            <p class="apresentacao__conteudo__texto">
-                C# projects developed in Unity.</p>
-                <p class="apresentacao__conteudo__texto">
-                    <strong>- Game development</strong>
-                </p>
-                <p class="apresentacao__conteudo__texto">
-                    <strong>- Movement manipulation</strong>
-                </p>
-                <p class="apresentacao__conteudo__texto">
-                    <strong>- Blend Shapes manipulation</strong>
-                </p>
-                <p class="apresentacao__conteudo__texto">
-                    <strong>- Blend Trees creation</strong>
-                </p>
 
-            <div class="apresentacao__links">
-                <h2 class="apresentacao__links__subtitulo">Acess my projects:</h2>
-                <a class="apresentacao__links__link" href="https://github.com/GuadalupePradoSR" target="_blank">
-                    <img src="github.png">
-                    Github
+    <main class="apresentacao">
+        <!-- Intro Section -->
+        <section class="unity-intro">
+            <h1 class="unity-title">Unity</h1>
+            <p class="unity-subtitle">
+                Developing interactive experiences and immersive games with C# and Unity Engine
+            </p>
+        </section>
+
+        <!-- Skills Section -->
+        <section class="skills-container">
+            <div class="skill-card" data-xp="95">
+                <span class="skill-card__icon">🎮</span>
+                <h3 class="skill-card__title">Game Development</h3>
+                <p class="skill-card__description">
+                    Complete development of 2D and 3D games, from concept to publication.
+                </p>
+                <div class="skill-card__xp">
+                    <div class="skill-card__xp-fill"></div>
+                </div>
+                <span class="skill-card__level">Level 95</span>
+            </div>
+
+            <div class="skill-card" data-xp="90">
+                <span class="skill-card__icon">🕹️</span>
+                <h3 class="skill-card__title">Movement Systems</h3>
+                <p class="skill-card__description">
+                    Fluid and responsive movement systems for characters and objects.
+                </p>
+                <div class="skill-card__xp">
+                    <div class="skill-card__xp-fill"></div>
+                </div>
+                <span class="skill-card__level">Level 90</span>
+            </div>
+
+            <div class="skill-card" data-xp="85">
+                <span class="skill-card__icon">🎭</span>
+                <h3 class="skill-card__title">Blend Shapes</h3>
+                <p class="skill-card__description">
+                    Facial animation and character morphing with advanced blend shapes.
+                </p>
+                <div class="skill-card__xp">
+                    <div class="skill-card__xp-fill"></div>
+                </div>
+                <span class="skill-card__level">Level 85</span>
+            </div>
+
+            <div class="skill-card" data-xp="88">
+                <span class="skill-card__icon">🌳</span>
+                <h3 class="skill-card__title">Blend Trees</h3>
+                <p class="skill-card__description">
+                    Creation of complex animation trees for smooth transitions.
+                </p>
+                <div class="skill-card__xp">
+                    <div class="skill-card__xp-fill"></div>
+                </div>
+                <span class="skill-card__level">Level 88</span>
+            </div>
+        </section>
+
+        <!-- Video Section -->
+        <section class="video-section">
+            <h2 class="section-title">My Projects</h2>
+            
+            <div class="video-gallery">
+                <div class="video-card">
+                    <div class="video-card__frame">
+                        <iframe class="video-card__video" 
+                                src="https://www.youtube.com/embed/qOggCfl99vE"
+                                title="Unity Project 1" 
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-card__info">
+                        <h3 class="video-card__title">Unity Project #1</h3>
+                        <div class="video-card__tags">
+                            <span class="video-tag">C#</span>
+                            <span class="video-tag">Unity</span>
+                            <span class="video-tag">3D</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-card__frame">
+                        <iframe class="video-card__video" 
+                                src="https://www.youtube.com/embed/kd26wIgfuaQ"
+                                title="Unity Project 2" 
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-card__info">
+                        <h3 class="video-card__title">Unity Project #2</h3>
+                        <div class="video-card__tags">
+                            <span class="video-tag">Animation</span>
+                            <span class="video-tag">Blend Tree</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-card__frame">
+                        <iframe class="video-card__video" 
+                                src="https://www.youtube.com/embed/jV1ZCcw6q58"
+                                title="Unity Project 3" 
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-card__info">
+                        <h3 class="video-card__title">Unity Project #3</h3>
+                        <div class="video-card__tags">
+                            <span class="video-tag">Movement</span>
+                            <span class="video-tag">Controller</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2 class="apresentacao__links__subtitulo" style="font-size: 1.8rem; margin-bottom: 1rem;">
+                Check out more projects:
+            </h2>
+            <div class="cta-buttons">
+                <a class="cta-button" href="https://github.com/GuadalupePradoSR" target="_blank">
+                    <img src="github.png" alt="GitHub">
+                    GitHub
                 </a>
-    
-                <a class="apresentacao__links__link" href="https://www.youtube.com/channel/UCjU4qzXtmGNZ2n-lT7WOkDQ" target="_blank">
-                    <img src="Background Eraser.png">
+                <a class="cta-button" href="https://www.youtube.com/channel/UCjU4qzXtmGNZ2n-lT7WOkDQ" target="_blank">
+                    <img src="Background Eraser.png" alt="YouTube">
                     YouTube
                 </a>
             </div>
         </section>
-        
-        <aside class="apresentacao__videos">
-
-            <div class="apresentacao__video">
-                <iframe width="300" height="170" src="https://www.youtube.com/embed/qOggCfl99vE"
-                        title="YouTube video player" frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                </iframe>
-            </div>
-
-            <div class="apresentacao__video">
-                <iframe width="300" height="170" src="https://www.youtube.com/embed/kd26wIgfuaQ" 
-                        title="YouTube video player" frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                </iframe>
-            </div>
-            
-            <div class="apresentacao__video">
-                <iframe width="300" height="170" src="https://www.youtube.com/embed/jV1ZCcw6q58"
-                        title="YouTube video player" frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                </iframe>
-            </div>
-            
-        </aside>
     </main>
+
     <footer class="rodape">
         <p>Developed by Guadalupe Prado.</p>
     </footer>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const elementsToAnimate = document.querySelectorAll(".apresentacao__conteudo__titulo, .apresentacao__conteudo__texto, .apresentacao__imagem");
+        // ========== XP BAR ANIMATION ==========
+        const skillCards = document.querySelectorAll('.skill-card');
+        
+        const skillObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const card = entry.target;
+                    const xpValue = card.dataset.xp;
+                    const xpFill = card.querySelector('.skill-card__xp-fill');
+                    
+                    setTimeout(() => {
+                        xpFill.style.width = xpValue + '%';
+                    }, 300);
+                    
+                    skillObserver.unobserve(card);
+                }
+            });
+        }, { threshold: 0.5 });
 
-            function checkVisibility() {
-                const triggerBottom = window.innerHeight * 0.85;
+        skillCards.forEach(card => skillObserver.observe(card));
 
-                elementsToAnimate.forEach(element => {
-                    const elementTop = element.getBoundingClientRect().top;
+        // ========== SCROLL ANIMATIONS ==========
+        const elementsToAnimate = document.querySelectorAll('.skill-card, .video-card');
+        
+        elementsToAnimate.forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(40px)';
+            el.style.transition = `all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) ${index * 0.1}s`;
+        });
 
-                    if (elementTop < triggerBottom) {
-                        element.classList.add("animate");
-                    }
-                });
-            }
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
 
-            window.addEventListener("scroll", checkVisibility);
-            checkVisibility(); // Initial check on load
+        elementsToAnimate.forEach(el => scrollObserver.observe(el));
+
+        // ========== PARALLAX EFFECT ON FLOATING OBJECTS ==========
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.02;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.02;
+            
+            document.querySelectorAll('.sphere').forEach((sphere, i) => {
+                const factor = (i + 1) * 0.5;
+                sphere.style.transform = `translate(${moveX * factor}px, ${moveY * factor}px)`;
+            });
         });
     </script>
 </body>
